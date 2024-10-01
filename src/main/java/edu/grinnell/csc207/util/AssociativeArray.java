@@ -77,31 +77,33 @@ public class AssociativeArray<K, V> {
   // +----------------+
 
   /**
-   * Set the value associated with key to value. Future calls to
-   * get(key) will return value.
+   * Set the value associated with key to value. Future calls to get(key) will return value.
    *
-   * @param K
-   *   The key whose value we are seeting.
-   * @param V
-   *   The value of that key.
+   * @param K The key whose value we are seeting.
+   * @param V The value of that key.
    *
-   * @throws NullKeyException
-   *   If the client provides a null key.
+   * @throws NullKeyException If the client provides a null key.
    */
-  public void set(K key, V value) throws NullKeyException{
-    if(key == null){
-      return;
-    } 
-    for(int i = 0; i < this.size; i++){
-      if(pairs[i].key == key){
-        pairs[i].val = value;
+  public void set(K key, V value) throws NullKeyException {
+    if (key == null) {
+      throw new NullKeyException();
+    }
+    try {
+      pairs[find(key)].val = value;
+    } catch (Exception e) {
+      KVPair<K, V> newArray[] =
+          (KVPair<K, V>[]) newInstance((new KVPair<K, V>()).getClass(), size + 1);
+      for (int a = 0; a < size; a++) {
+        newArray[a] = pairs[a];
       }
-      pairs[i].key = key;
-      pairs[i].val = value;
-      }
+      size +=1;
+      newArray[size-1] = (new KVPair<K, V>(key, value));
+      pairs=newArray;
     }
 
-// set(K,V)
+  }
+
+  // set(K,V)
 
   /**
    * Get the value associated with key.
@@ -111,18 +113,30 @@ public class AssociativeArray<K, V> {
    * @throws KeyNotFoundException when the key is null or does not appear in the associative array.
    */
   public V get(K key) throws KeyNotFoundException {
-    if (key == null){
-      return null;
+    if (key == null) {
+      throw new KeyNotFoundException();
     }
-    for(int a = 0; )
-    return null; // STUB
+    try {
+      return pairs[find(key)].val;
+      // code that may fail
+    } catch (KeyNotFoundException e) {
+      throw e;
+    }
   } // get(K)
 
   /**
    * Determine if key appears in the associative array. Should return false for the null key.
    */
   public boolean hasKey(K key) {
-    return false; // STUB
+    if (key == null) {
+      return false;
+    }
+    for (int b = 0; b < size; b++) {
+      if (pairs[b].key == key) {
+        return true;
+      }
+    }
+    return false;
   } // hasKey(K)
 
   /**
@@ -130,7 +144,13 @@ public class AssociativeArray<K, V> {
    * exception. If the key does not appear in the associative array, does nothing.
    */
   public void remove(K key) {
-    // STUB
+    for (int c = 0; c < size; c++) {
+      if (pairs[c].key == key) {
+        pairs[c].key = null;
+        pairs[c].val = null;
+      }
+
+    }
   } // remove(K)
 
   /**
@@ -160,6 +180,11 @@ public class AssociativeArray<K, V> {
    * @throws KeyNotFoundException If the key does not appear in the associative array.
    */
   int find(K key) throws KeyNotFoundException {
+    for (int i = 0; i < size; i++) {
+      if (key == pairs[i].key) {
+        return i;
+      }
+    }
     throw new KeyNotFoundException(); // STUB
   } // find(K)
 
