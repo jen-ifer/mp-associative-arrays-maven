@@ -60,7 +60,14 @@ public class AssociativeArray<K, V> {
    * @return a new copy of the array
    */
   public AssociativeArray<K, V> clone() {
-    return null; // STUB
+    AssociativeArray<K, V> clone = new AssociativeArray<K, V>();
+    for (int i = 0; i < size; i++) {
+      try {
+        clone.set(this.pairs[i].key, this.pairs[i].val);
+      } catch (NullKeyException e) {
+      }
+    }
+    return clone;
   } // clone()
 
   /**
@@ -69,7 +76,14 @@ public class AssociativeArray<K, V> {
    * @return a string of the form "{Key0:Value0, Key1:Value1, ... KeyN:ValueN}"
    */
   public String toString() {
-    return "{}"; // STUB
+    String array2str = "{";
+
+    for (int q = 0; q < this.size - 1; q++) {
+      array2str += pairs[q].key.toString() + ":" + pairs[q].val.toString() + ", ";
+    }
+    array2str += pairs[this.size - 1].key + ":" + pairs[this.size - 1].val;
+    array2str += "}";
+    return array2str;
   } // toString()
 
   // +----------------+----------------------------------------------
@@ -90,17 +104,30 @@ public class AssociativeArray<K, V> {
     }
     try {
       pairs[find(key)].val = value;
-    } catch (Exception e) {
-      KVPair<K, V> newArray[] =
-          (KVPair<K, V>[]) newInstance((new KVPair<K, V>()).getClass(), size + 1);
-      for (int a = 0; a < size; a++) {
-        newArray[a] = pairs[a];
+    } catch (KeyNotFoundException e) {
+      if (pairs.length <= this.size) {
+        this.expand();
       }
-      size +=1;
-      newArray[size-1] = (new KVPair<K, V>(key, value));
-      pairs=newArray;
+      for (int i = 0; i < pairs.length; i++) {
+        if (pairs[i] == null) {
+          pairs[i] = new KVPair<K, V>(key, value);
+          pairs[i].key = key;
+          pairs[i].val = value;
+          size += 1;
+          return;
+        }
+      }
+
     }
 
+    // KVPair<K, V> newArray[] =
+    // (KVPair<K, V>[]) newInstance((new KVPair<K, V>()).getClass(), size + 1);
+    // for (int a = 0; a < size; a++) {
+    // newArray[a] = pairs[a];
+    // }
+    // size += 1;
+    // newArray[size - 1] = (new KVPair<K, V>(key, value));
+    // pairs = newArray;
   }
 
   // set(K,V)
@@ -116,12 +143,7 @@ public class AssociativeArray<K, V> {
     if (key == null) {
       throw new KeyNotFoundException();
     }
-    try {
-      return pairs[find(key)].val;
-      // code that may fail
-    } catch (KeyNotFoundException e) {
-      throw e;
-    }
+    return pairs[find(key)].val;
   } // get(K)
 
   /**
@@ -144,13 +166,22 @@ public class AssociativeArray<K, V> {
    * exception. If the key does not appear in the associative array, does nothing.
    */
   public void remove(K key) {
+    if (size == 0) {
+      // System.err.println("There should be nothing in the array.");
+      return;
+    }
     for (int c = 0; c < size; c++) {
       if (pairs[c].key == key) {
-        pairs[c].key = null;
-        pairs[c].val = null;
+       pairs[c] = null;
       }
-
     }
+    for (int a = 0; a < size-1; a++) {
+      if (pairs[a] == null) {
+        pairs[a] = pairs[a + 1];
+        pairs[a+1] = null;
+      }
+    }
+     this.size = this.size-1;
   } // remove(K)
 
   /**
