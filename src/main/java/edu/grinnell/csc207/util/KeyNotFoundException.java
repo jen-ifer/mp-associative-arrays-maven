@@ -1,8 +1,7 @@
 package edu.grinnell.csc207.util;
 
 /**
- * Exceptions that indicate that a key is not in an associative array
- * (dictionary, map, etc.).
+ * Exceptions that indicate that a key is not in an associative array (dictionary, map, etc.).
  *
  * @author Samuel A. Rebelsky
  */
@@ -21,8 +20,7 @@ public class KeyNotFoundException extends Exception {
   /**
    * Create a new exception with a particular message.
    *
-   * @param message
-   *   The message in the exceptoin.
+   * @param message The message in the exceptoin.
    */
   public KeyNotFoundException(String message) {
     super(message);

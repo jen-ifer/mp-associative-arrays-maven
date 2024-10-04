@@ -20,8 +20,7 @@ public class NullKeyException extends Exception {
   /**
    * Create a new exception with a particular message.
    *
-   * @param message
-   *   The exception's message.
+   * @param message The exception's message.
    */
   public NullKeyException(String message) {
     super(message);
