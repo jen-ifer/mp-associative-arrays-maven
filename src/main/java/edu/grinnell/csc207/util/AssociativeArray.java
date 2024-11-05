@@ -34,7 +34,7 @@ public class AssociativeArray<K, V> {
   /**
    * The array of key/value pairs.
    */
-  KVPair<K, V> pairs[];
+  KVPair<K, V>[] pairs;
 
   // +--------------+------------------------------------------------
   // | Constructors |
@@ -65,8 +65,8 @@ public class AssociativeArray<K, V> {
       try {
         clone.set(this.pairs[i].key, this.pairs[i].val);
       } catch (NullKeyException e) {
-      }
-    }
+      } //catch
+    } //for
     return clone;
   } // clone()
 
@@ -80,7 +80,7 @@ public class AssociativeArray<K, V> {
 
     for (int q = 0; q < this.size - 1; q++) {
       array2str += pairs[q].key.toString() + ":" + pairs[q].val.toString() + ", ";
-    }
+    } //for
     array2str += pairs[this.size - 1].key + ":" + pairs[this.size - 1].val;
     array2str += "}";
     return array2str;
@@ -93,8 +93,8 @@ public class AssociativeArray<K, V> {
   /**
    * Set the value associated with key to value. Future calls to get(key) will return value.
    *
-   * @param K The key whose value we are seeting.
-   * @param V The value of that key.
+   * @param key The key whose value we are seeting.
+   * @param value The value of that key.
    *
    * @throws NullKeyException If the client provides a null key.
    */
@@ -110,14 +110,13 @@ public class AssociativeArray<K, V> {
       } //if
       this.pairs[this.size] = new KVPair<K, V>(key, value);
       this.size++;
-    }
-  }
-  // set(K,V)
+    } //catch
+  } // set(K,V)
 
   /**
    * Get the value associated with key.
    *
-   * @param key A key
+   * @param key The key we are looking for
    *
    * @throws KeyNotFoundException when the key is null or does not appear in the associative array.
    */
@@ -130,11 +129,12 @@ public class AssociativeArray<K, V> {
 
   /**
    * Determine if key appears in the associative array. Should return false for the null key.
+   * @param key The key we are looking for
    */
   public boolean hasKey(K key) {
     if (key == null) {
       return false;
-    }
+    } //if
     for (int b = 0; b < size; b++) {
       if (pairs[b].key.equals(key)) {
         return true;
@@ -146,24 +146,29 @@ public class AssociativeArray<K, V> {
   /**
    * Remove the key/value pair associated with a key. Future calls to get(key) will throw an
    * exception. If the key does not appear in the associative array, does nothing.
+   * @param key The key we are looking to remove
    */
   public void remove(K key) {
+    boolean found = false;
     if (size == 0) {
       return;
     } //if
     for (int c = 0; c < size; c++) {
       if (pairs[c].key.equals(key)) {
         pairs[c] = null;
+        found = true;
       } //if
     } //for
-    for (int a = 0; a < size - 1; a++) {
-      if (pairs[a] == null) {
-        pairs[a] = pairs[a + 1];
-        pairs[a + 1] = null;
-      } //if
-    } //for
-    this.size = this.size - 1;
-  } // remove(K)
+    if (found) {
+      for (int a = 0; a < size - 1; a++) {
+        if (pairs[a] == null) {
+          pairs[a] = pairs[a + 1];
+          pairs[a + 1] = null;
+        } //if
+      } //for
+      this.size = this.size - 1;
+    } //if
+  } //remove(K)    
 
   /**
    * Determine how many key/value pairs are in the associative array.
